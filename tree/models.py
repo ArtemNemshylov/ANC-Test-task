@@ -6,8 +6,9 @@ class Employee(models.Model):
     position = models.CharField(max_length=100)
     date_of_employment = models.DateField()
     email = models.EmailField(max_length=255, unique=True)
+    level = models.PositiveIntegerField(default=0)
     chief = models.ForeignKey(
-        'self', on_delete=models.SET_NULL(), null=True, blank=True,
+        'self', on_delete=models.SET_NULL, null=True, blank=True,
         help_text="The chief of the employee. Can be null if not assigned."
     )
 
@@ -20,4 +21,4 @@ class Employee(models.Model):
         ]
 
     def __str__(self):
-        return self.full_name, self.position, self.email
+        return f"{self.full_name}, {self.position}, {self.email}"
