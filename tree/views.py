@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .scripts import database_seeder
+from tree.scripts import database_seeder
 from .models import Employee
 
 
@@ -29,11 +29,19 @@ def progress_view(request):
     return JsonResponse({'current_count': current_count, 'total_count': total_count})
 
 
-def show_hierarchy(request):
-    # Получаем сотрудников первого уровня и их подчиненных
-    level_1_employees = Employee.objects.filter(level=1).prefetch_related('subordinates')
+from django.shortcuts import render
+from .models import Employee
 
+
+def show_hierarchy(request):
+    # Получаем только объекты Employee первого уровня
+    level_1_employees = Employee.objects.filter(level=1)
     context = {
         'level_1_employees': level_1_employees,
     }
     return render(request, 'tree/hierarchy.html', context)
+
+
+def get_subordinates(request, employee_id):
+    subordinates = Employee.objects.filter(chief_id=employee_id).values('id', 'full_name', 'position')
+    return JsonResponse(list(subordinates), safe=False)
