@@ -1,0 +1,43 @@
+{% extends 'tree/base.html' %}
+
+{% block title %}Иерархия сотрудников{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Иерархия сотрудников</h1>
+    <ul class="list-unstyled">
+        {% for employee in level_1_employees %}
+        <li>
+            <strong>Уровень 1:</strong> <a href="javascript:void(0);" class="toggle-subordinates">{{ employee.full_name }} ({{ employee.position }})</a>
+            <ul class="subordinates-list list-unstyled" style="display:none;">
+                {% for subordinate in employee.subordinates.all %}
+                <li>
+                    <strong>Уровень 2:</strong> <a href="javascript:void(0);" class="toggle-subordinates">{{ subordinate.full_name }} ({{ subordinate.position }})</a>
+                    <!-- Добавьте больше уровней сюда, если требуется -->
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% empty %}
+        <li>Нет сотрудников на первом уровне.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggles = document.querySelectorAll('.toggle-subordinates');
+    toggles.forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+            const subordinatesList = this.nextElementSibling;
+            if (subordinatesList.style.display === 'none') {
+                subordinatesList.style.display = 'block';
+            } else {
+                subordinatesList.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

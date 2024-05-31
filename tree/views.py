@@ -26,6 +26,14 @@ def populate_db_view(request):
 def progress_view(request):
     current_count = Employee.objects.count()
     total_count = 88572  # Общее количество сотрудников, которое будет добавлено
-    print(current_count)
     return JsonResponse({'current_count': current_count, 'total_count': total_count})
 
+
+def show_hierarchy(request):
+    # Получаем сотрудников первого уровня и их подчиненных
+    level_1_employees = Employee.objects.filter(level=1).prefetch_related('subordinates')
+
+    context = {
+        'level_1_employees': level_1_employees,
+    }
+    return render(request, 'tree/hierarchy.html', context)

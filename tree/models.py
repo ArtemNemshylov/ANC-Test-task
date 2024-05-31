@@ -2,15 +2,12 @@ from django.db import models
 
 
 class Employee(models.Model):
-    full_name = models.CharField(max_length=100)
-    position = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=255)
+    position = models.CharField(max_length=255)
     date_of_employment = models.DateField()
-    email = models.EmailField(max_length=255, unique=True)
-    level = models.PositiveIntegerField(default=0)
-    chief = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, null=True, blank=True,
-        help_text="The chief of the employee. Can be null if not assigned."
-    )
+    email = models.EmailField(unique=True)
+    level = models.IntegerField()
+    chief = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, related_name='subordinates')
 
     class Meta:
         ordering = ['full_name']
