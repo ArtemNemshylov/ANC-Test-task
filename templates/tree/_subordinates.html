@@ -1,14 +1,12 @@
-{% if employee %}
-    <li>
-        <strong>Уровень {{ level }}:</strong> {{ employee.full_name }} ({{ employee.position }})
-        {% if employee.subordinates.all %}
-            <ul>
-                {% for subordinate in employee.subordinates.all %}
-                    {% include 'tree/_subordinates.html' with employee=subordinate level=level|add:1 %}
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Нет подчиненных.</p>
-        {% endif %}
-    </li>
-{% endif %}
+<li>
+    <strong>Уровень {{ level }}:</strong> {{ employee.full_name }} ({{ employee.position }})
+    {% if employee.subordinates.all %}
+        <ul>
+            {% for subordinate in employee.subordinates.all %}
+                {% include 'tree/_subordinates.html' with employee=subordinate level=level|add:1 %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет подчиненных.</p>
+    {% endif %}
+</li>

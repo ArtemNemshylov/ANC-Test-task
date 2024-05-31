@@ -29,10 +29,6 @@ def progress_view(request):
     return JsonResponse({'current_count': current_count, 'total_count': total_count})
 
 
-from django.shortcuts import render
-from .models import Employee
-
-
 def show_hierarchy(request):
     # Получаем только объекты Employee первого уровня
     level_1_employees = Employee.objects.filter(level=1)

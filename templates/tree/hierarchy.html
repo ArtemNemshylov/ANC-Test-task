@@ -7,10 +7,42 @@
         <h1>Иерархия сотрудников</h1>
         <ul class="list-unstyled">
             {% for employee in level_1_employees %}
-                {% include 'tree/_subordinates.html' with employee=employee level=1 %}
+                <li>
+                    {{ employee.full_name }} ({{ employee.position }})
+                    <button onclick="loadSubordinates({{ employee.id }}, this)">Показать подчиненных</button>
+                    <ul class="subordinates-list" id="subordinates-{{ employee.id }}"></ul>
+                </li>
             {% empty %}
                 <li>Нет сотрудников на первом уровне.</li>
             {% endfor %}
         </ul>
     </div>
+
+    <script>
+        function loadSubordinates(employeeId, button) {
+            const subordinatesList = document.getElementById(`subordinates-${employeeId}`);
+            if (subordinatesList.innerHTML) {
+                subordinatesList.innerHTML = '';
+                button.textContent = 'Показать подчиненных';
+                return;
+            }
+
+            fetch(`/get_subordinates/${employeeId}/`)
+                .then(response => response.json())
+                .then(subordinates => {
+                    if (subordinates.length === 0) {
+                        subordinatesList.innerHTML = '<li>Нет подчиненных.</li>';
+                    } else {
+                        subordinatesList.innerHTML = subordinates.map(sub =>
+                            `<li>
+                                ${sub.full_name} (${sub.position})
+                                <button onclick="loadSubordinates(${sub.id}, this)">Показать подчиненных</button>
+                                <ul class="subordinates-list" id="subordinates-${sub.id}"></ul>
+                            </li>`
+                        ).join('');
+                    }
+                    button.textContent = 'Скрыть подчиненных';
+                });
+        }
+    </script>
 {% endblock %}
