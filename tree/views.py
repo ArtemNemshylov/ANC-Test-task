@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from tree.scripts import database_seeder
 from .models import Employee
+from django.contrib.auth.models import User
 
 
 def homepage_view(request):

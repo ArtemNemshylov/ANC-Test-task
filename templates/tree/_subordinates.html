@@ -1,12 +1,13 @@
-<li>
+{% extends 'tree/base.html' %}
+<li class="list-group-item">
     <strong>Уровень {{ level }}:</strong> {{ employee.full_name }} ({{ employee.position }})
     {% if employee.subordinates.all %}
-        <ul>
+        <ul class="list-group list-group-flush">
             {% for subordinate in employee.subordinates.all %}
                 {% include 'tree/_subordinates.html' with employee=subordinate level=level|add:1 %}
             {% endfor %}
         </ul>
     {% else %}
-        <p>Нет подчиненных.</p>
+        <p class="text-muted">Нет подчиненных.</p>
     {% endif %}
 </li>
