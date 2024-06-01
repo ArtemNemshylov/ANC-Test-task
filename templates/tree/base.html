@@ -38,18 +38,21 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            {#            {% if user.is_authenticated %}#}
+                        {% if user.is_authenticated %}
             <li class="nav-item">
-                <a class="nav-link" href="#">Выйти</a>
+                <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
             </li>
-            {#            {% else %}#}
+                            <li class="nav-item">
+                <a class="nav-link" href="{% url "employee_list" %}">Управление бд</a></a>
+            </li>
+                        {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="#">Войти в личный кабинет</a>
+                <a class="nav-link" href="{% url 'login' %}">Войти в личный кабинет</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Зарегистрироваться</a>
+                <a class="nav-link" href="{% url "register" %}">Зарегистрироваться</a>
             </li>
-            {#            {% endif %}#}
+                        {% endif %}
         </ul>
     </div>
 </nav>

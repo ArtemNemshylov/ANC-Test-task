@@ -1,0 +1,12 @@
+<!-- employee_rows.html -->
+{% for employee in employees %}
+<tr>
+    <td>{{ employee.full_name }}</td>
+    <td>{{ employee.position }}</td>
+    <td>{{ employee.email }}</td>
+    <td>{{ employee.level }}</td>
+    <td>
+        <a href="{% url 'employee_edit' employee.id %}">Edit</a>
+    </td>
+</tr>
+{% endfor %}
