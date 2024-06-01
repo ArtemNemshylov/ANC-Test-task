@@ -2,6 +2,7 @@
 
 {% block content %}
     <h2>Список сотрудников</h2>
+    <a href="{% url 'employee_add' %}" class="btn btn-success">Добавить сотрудника</a>
     <table class="table">
         <thead>
         <tr>
@@ -12,52 +13,18 @@
             <th>Actions</th>
         </tr>
         </thead>
-        <tbody id="employee-table-body">
-        {% include 'tree/employee_rows.html' %}
+        <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.full_name }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.email }}</td>
+            <td>{{ employee.level }}</td>
+            <td>
+                <a href="{% url 'employee_edit' employee.id %}">Edit</a>
+            </td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
-    <button id="load-more" class="btn btn-primary">Load More</button>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let offset = 200;  // Начальное смещение
-            const limit = 200;
-            const sort = '{{ current_sort }}';
-            const direction = '{{ sort_direction }}';
-            let loading = false;
-            let allDataLoaded = false;
-
-            function loadMoreData() {
-                if (loading || allDataLoaded) return;
-                loading = true;
-
-                $.ajax({
-                    url: `/employees/?limit=${limit}&offset=${offset}&sort=${sort}&direction=${direction}`,
-                    type: "GET",
-                    headers: {"X-Requested-With": "XMLHttpRequest"},
-                    success: function (data) {
-                        const rows = $(data).find('tr');
-                        if (rows.length > 0) {
-                            $('#employee-table-body').append(rows);
-                            offset += limit;
-                        } else {
-                            allDataLoaded = true;
-                            $('#load-more').hide(); // Скрыть кнопку, если больше нет данных
-                        }
-                        loading = false;
-                    },
-                    error: function () {
-                        loading = false;
-                    }
-                });
-            }
-
-            $('#load-more').on('click', function () {
-                loadMoreData();
-            });
-
-            // Загрузить первые 200 элементов при загрузке страницы
-            loadMoreData();
-        });
-    </script>
 {% endblock %}

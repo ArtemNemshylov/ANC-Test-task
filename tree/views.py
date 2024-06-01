@@ -8,6 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from .forms import RegisterForm, LoginForm
 from .forms import EmployeeForm
+import logging
 
 
 def homepage_view(request):
@@ -81,26 +82,22 @@ def logout_view(request):
     return redirect('show_hierarchy')
 
 
+logger = logging.getLogger(__name__)
+
+
 def employee_list(request):
     sort = request.GET.get('sort', 'full_name')
     direction = request.GET.get('direction', 'asc')
-    limit = int(request.GET.get('limit', 20))
-    offset = int(request.GET.get('offset', 0))
 
     if direction == 'desc':
         sort = '-' + sort
 
-    employees = Employee.objects.all().order_by(sort)[offset:offset + limit]
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return render(request, 'tree/employee_rows.html', {'employees': employees})
+    employees = Employee.objects.all().order_by(sort)
 
     context = {
         'employees': employees,
         'current_sort': sort.lstrip('-'),
-        'sort_direction': 'desc' if direction == 'asc' else 'asc',
-        'limit': limit,
-        'offset': offset
+        'sort_direction': 'desc' if direction == 'asc' else 'asc'
     }
     return render(request, 'tree/employee_list.html', context)
 
@@ -115,3 +112,14 @@ def employee_edit(request, pk):
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'tree/employee_edit.html', {'form': form})
+
+
+def employee_add(request):
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('employee_list')
+    else:
+        form = EmployeeForm()
+    return render(request, 'tree/employee_add.html', {'form': form})
